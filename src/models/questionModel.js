@@ -1,12 +1,9 @@
 const mongoose = require("mongoose");
 
 const questions = new mongoose.Schema({
+  listId: String,
   question: String,
-  a: String,
-  b: String,
-  c: String,
-  d: String,
-  correct: String,
+  options: [{ optionsContent: String, correct: Boolean }],
 });
 const questionModel = mongoose.model("questions", questions);
 

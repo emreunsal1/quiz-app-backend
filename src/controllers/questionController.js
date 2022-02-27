@@ -1,4 +1,4 @@
-const { addQuestion } = require("../models/questionModel");
+const { addQuestion } = require("../Database/writeToDatabase");
 
 const addQuestionController = (req, res) => {
   const question = req.body;
@@ -6,4 +6,9 @@ const addQuestionController = (req, res) => {
   res.send("completed add question");
 };
 
-module.exports = { addQuestionController };
+const getQuestionsWithListId = (req, res) => {
+  const listId = req.params;
+  res.send(listId);
+};
+
+module.exports = { addQuestionController, getQuestionsWithListId };

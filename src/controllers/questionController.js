@@ -1,4 +1,4 @@
-const { addQuestion } = require("../Database/writeToDatabase");
+const { addQuestion } = require("../database/writeToDatabase");
 
 const addQuestionController = (req, res) => {
   const question = req.body;

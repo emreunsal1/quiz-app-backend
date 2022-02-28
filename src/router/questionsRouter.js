@@ -6,6 +6,6 @@ const {
 const questionRouter = require("express").Router();
 
 questionRouter.post("/add", addQuestionController);
-questionRouter.get("/:listid", getQuestionsWithListId);
+questionRouter.get("/:listId", getQuestionsWithListId);
 
 module.exports = { questionRouter };

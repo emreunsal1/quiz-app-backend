@@ -1,23 +1,36 @@
 const jwt = require("jsonwebtoken");
-const { userControl } = require("../Database/callFromDatabase");
-const { addUser } = require("../Database/writeToDatabase");
+const { checkUserExists, addUser } = require("../models/usersModel");
+const { config } = require("dotenv");
+config();
 
-const addUserController = (req, res) => {
-  const user = req.body;
-  addUser(user);
+const addUserController = async (req, res) => {
+  const { username, password } = req.body;
+  const user = await checkUserExists({ username });
+  if (!user) {
+    const newUser = await addUser({ username, password });
+    return res.send(newUser);
+  }
+  res.send("kaydedilemedi");
 };
 
-const loginUserController = (req, res) => {
+const loginUserController = async (req, res) => {
   const { username, password } = req.body;
-  userControl(username, password);
+  const user = await checkUserExists({ username, password });
+
+  if (!user) {
+    return res.status(404).send({
+      error: true,
+      message: "user not found",
+    });
+  }
   const token = jwt.sign(
     {
       username: username,
       exp: Math.floor(Date.now() / 1000) + 60,
     },
-    "secretkey"
+    proces.env.JWT_SECRET
   );
-  res.send(token);
+  res.send({ token });
 };
 
 module.exports = { addUserController, loginUserController };

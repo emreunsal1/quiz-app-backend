@@ -1,11 +1,11 @@
 const {
   addQuestionController,
-  getQuestionsWithListId,
-} = require("../controllers/questionController");
+  getQuestionsWithListId
+} = require('../controllers/questionController');
 
-const questionRouter = require("express").Router();
+const questionRouter = require('express').Router();
 
-questionRouter.post("/add", addQuestionController);
-questionRouter.get("/:listId", getQuestionsWithListId);
+questionRouter.post('/add', addQuestionController);
+questionRouter.get('/:listId', getQuestionsWithListId);
 
 module.exports = { questionRouter };

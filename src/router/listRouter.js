@@ -1,11 +1,11 @@
 const {
   addNewListController,
-  getAllListCOntroller,
-} = require("../controllers/listController");
+  getAllListCOntroller
+} = require('../controllers/listController');
 
-const listRouter = require("express").Router();
+const listRouter = require('express').Router();
 
-listRouter.post("/new", addNewListController);
-listRouter.get("/all", getAllListCOntroller);
+listRouter.post('/new', addNewListController);
+listRouter.get('/all', getAllListCOntroller);
 
 module.exports = { listRouter };

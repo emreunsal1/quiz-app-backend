@@ -1,13 +1,13 @@
-const mongoose = require("mongoose");
+const mongoose = require('mongoose');
 
 const user = new mongoose.Schema(
   {
     username: String,
-    password: String,
+    password: String
   },
   { timestamps: true }
 );
-const userModel = mongoose.model("users", user);
+const userModel = mongoose.model('users', user);
 
 const addUser = async (user) => {
   try {

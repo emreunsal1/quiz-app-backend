@@ -1,6 +1,6 @@
-const jwt = require("jsonwebtoken");
-const { checkUserExists, addUser } = require("../models/usersModel");
-const { config } = require("dotenv");
+const { checkUserExists, addUser } = require('../models/usersModel');
+const { config } = require('dotenv');
+const { createToken } = require('../utils/token');
 config();
 
 const addUserController = async (req, res) => {
@@ -10,7 +10,7 @@ const addUserController = async (req, res) => {
     const newUser = await addUser({ username, password });
     return res.send(newUser);
   }
-  res.send("kaydedilemedi");
+  res.send('kaydedilemedi');
 };
 
 const loginUserController = async (req, res) => {
@@ -20,16 +20,11 @@ const loginUserController = async (req, res) => {
   if (!user) {
     return res.status(404).send({
       error: true,
-      message: "user not found",
+      message: 'user not found'
     });
   }
-  const token = jwt.sign(
-    {
-      username: username,
-      exp: Math.floor(Date.now() / 1000) + 60,
-    },
-    proces.env.JWT_SECRET
-  );
+
+  const token = createToken({ username });
   res.send({ token });
 };
 

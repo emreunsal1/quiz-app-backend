@@ -14,4 +14,9 @@ const addList = async (list) => {
   return newList || false;
 };
 
-module.exports = { addList };
+const checkListExist = async (listInfo) => {
+  const list = await ListModel.findOne(listInfo).exec();
+  return list || false;
+};
+
+module.exports = { addList, checkListExist };

@@ -1,18 +1,28 @@
-const { addList } = require('../models/ListModel');
+const { encodeToken } = require('../auth');
+const { addList, checkListExist } = require('../models/ListModel');
 
 const addNewListController = async (req, res) => {
-  const { userId, name } = req.body;
+  const { name } = req.body;
+  const token = req.headers.authorization.split(' ')[1];
+  const { userId } = encodeToken(token);
+
+  const checkList = await checkListExist({ userId, name });
+  if (checkList) {
+    return res.status('401').send({
+      error: true,
+      message: 'name must be unique'
+    });
+  }
   const response = await addList({ userId, name });
-  console.log(response);
   if (!response) {
     return res.status(404).send({
       message: 'liste eklenemedi',
       error: true
     });
   }
-  res.send(response);
+  res.send('added new list');
 };
 
-const getAllListCOntroller = (req, res) => {};
+const getAllListController = (req, res) => {};
 
-module.exports = { addNewListController, getAllListCOntroller };
+module.exports = { addNewListController, getAllListController };

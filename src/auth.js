@@ -4,7 +4,8 @@ require('dotenv').config();
 const jsonWebTokenControl = (req, res, next) => {
   try {
     const token = req.headers.authorization.split(' ')[1];
-    jwt.verify(token, process.env.JWT_SECRET);
+    const encodeToken = jwt.verify(token, process.env.JWT_SECRET);
+    req.token = encodeToken;
     next();
   } catch (error) {
     res.status(401).send({
@@ -13,9 +14,4 @@ const jsonWebTokenControl = (req, res, next) => {
   }
 };
 
-const encodeToken = (token) => {
-  const data = jwt.verify(token, process.env.JWT_SECRET);
-  return data;
-};
-
-module.exports = { jsonWebTokenControl, encodeToken };
+module.exports = { jsonWebTokenControl };

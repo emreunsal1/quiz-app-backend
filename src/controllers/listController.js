@@ -1,10 +1,9 @@
-const { encodeToken } = require('../auth');
 const { addList, checkListExist } = require('../models/ListModel');
 
 const addNewListController = async (req, res) => {
   const { name } = req.body;
-  const token = req.headers.authorization.split(' ')[1];
-  const { userId } = encodeToken(token);
+  const token = req.token;
+  const { userId } = token;
 
   const checkList = await checkListExist({ userId, name });
   if (checkList) {

@@ -20,7 +20,6 @@ const addUser = async (user) => {
 
 const checkUserExists = async (query) => {
   const foundUser = await userModel.findOne(query);
-  console.log(foundUser);
   return foundUser || false;
 };
 

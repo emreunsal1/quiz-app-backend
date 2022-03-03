@@ -1,4 +1,4 @@
-const { addList, checkListExist } = require('../models/ListModel');
+const { addList, checkListExist, getUserLists } = require('../models/ListModel');
 
 const addNewListController = async (req, res) => {
   const { name } = req.body;
@@ -22,6 +22,17 @@ const addNewListController = async (req, res) => {
   res.send('added new list');
 };
 
-const getAllListController = (req, res) => {};
+const getAllListController = async (req, res) => {
+  const token = req.token;
+  const response = await getUserLists(token.userId);
+
+  if (!response) {
+    return res.status(401).send({
+      message: 'liste bulunmadı',
+      error: true
+    });
+  }
+  res.send(response);
+};
 
 module.exports = { addNewListController, getAllListController };

@@ -22,4 +22,9 @@ const addQuestion = (questionJson) => {
   });
 };
 
-module.exports = { addQuestion };
+const getQestionWithListId = async (listId) => {
+  const questions = await QuestionModel.find(listId);
+  return questions || false;
+};
+
+module.exports = { addQuestion, getQestionWithListId };

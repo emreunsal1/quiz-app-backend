@@ -4,7 +4,7 @@ const createToken = (data) => {
   const token = jwt.sign(
     {
       ...data,
-      exp: Math.floor(Date.now() / 1000) + 360
+      exp: Math.floor(Date.now() / 1000) + 36000
     },
     process.env.JWT_SECRET
   );

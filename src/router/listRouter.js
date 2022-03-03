@@ -8,6 +8,6 @@ const {
 const listRouter = require('express').Router();
 
 listRouter.post('/new', jsonWebTokenControl, addNewListController);
-listRouter.get('/all', getAllListController);
+listRouter.get('/', jsonWebTokenControl, getAllListController);
 
 module.exports = { listRouter };

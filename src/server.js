@@ -5,10 +5,13 @@ const { connectDB } = require('./database/connectToDatabase');
 
 const app = express();
 
-const server = app.listen(3000);
+const server = app.listen(3001);
 const io = socket(server);
 io.on('connection', (socket) => {
   console.log(socket.id);
+  socket.on('info', (data) => {
+    io.sockets.emit('info', data);
+  });
 });
 
 app.use(express.json());

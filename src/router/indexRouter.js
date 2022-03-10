@@ -7,8 +7,8 @@ const { userRouter } = require('./userRouter');
 const indexRouter = express.Router();
 
 indexRouter.use('/user', jsonWebTokenControl, userRouter);
-indexRouter.use('/question', questionRouter);
-indexRouter.use('/list', listRouter);
+indexRouter.use('/question', jsonWebTokenControl, questionRouter);
+indexRouter.use('/list', jsonWebTokenControl, listRouter);
 indexRouter.use('/auth', authRouter);
 
 module.exports = { indexRouter };

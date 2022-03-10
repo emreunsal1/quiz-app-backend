@@ -1,4 +1,3 @@
-const { jsonWebTokenControl } = require('../auth');
 
 const {
   addNewListController,
@@ -7,7 +6,7 @@ const {
 
 const listRouter = require('express').Router();
 
-listRouter.post('/new', jsonWebTokenControl, addNewListController);
-listRouter.get('/', jsonWebTokenControl, getAllListController);
+listRouter.post('/new', addNewListController);
+listRouter.get('/', getAllListController);
 
 module.exports = { listRouter };

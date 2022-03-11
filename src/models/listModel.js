@@ -19,12 +19,9 @@ const checkListExist = (userInfo) => {
 };
 
 const deleteList = async (listId) => {
-  const response = await ListModel.deleteOne({ _id: listId }, (err) => {
-    if (err) {
-      return false;
-    }
-    return true;
-  });
+  const list = listId.split(',');
+  const response = await ListModel.deleteMany({ _id: { $in: list } });
+  console.log(response);
   return response;
 };
 

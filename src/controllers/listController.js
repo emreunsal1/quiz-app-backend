@@ -24,7 +24,7 @@ const addNewListController = async (req, res) => {
 };
 
 const deleteListController = async (req, res) => {
-  const { listid } = req.params();
+  const { listid } = req.params;
   const response = await deleteList(listid);
   if (!response) {
     return res.status(404).send({ message: 'Fail to delete list', error: 'true' });

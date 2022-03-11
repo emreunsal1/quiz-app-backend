@@ -18,9 +18,19 @@ const checkListExist = (userInfo) => {
   return list;
 };
 
+const deleteList = async (listId) => {
+  const response = await ListModel.deleteOne({ _id: listId }, (err) => {
+    if (err) {
+      return false;
+    }
+    return true;
+  });
+  return response;
+};
+
 const getUserLists = async (userId) => {
   const data = await ListModel.find({ userId }).exec();
   return data || false;
 };
 
-module.exports = { addList, getUserLists, checkListExist };
+module.exports = { addList, getUserLists, checkListExist, deleteList };

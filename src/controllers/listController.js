@@ -1,4 +1,4 @@
-const { addList, checkListExist, getUserLists } = require('../models/ListModel');
+const { addList, checkListExist, getUserLists, deleteList } = require('../models/ListModel');
 
 const addNewListController = async (req, res) => {
   const { name } = req.body;
@@ -12,6 +12,7 @@ const addNewListController = async (req, res) => {
       message: 'name must be unique'
     });
   }
+
   const response = await addList({ userId, name });
   if (!response) {
     return res.status(404).send({
@@ -20,6 +21,15 @@ const addNewListController = async (req, res) => {
     });
   }
   res.send('added new list');
+};
+
+const deleteListController = async (req, res) => {
+  const { listid } = req.params();
+  const response = await deleteList(listid);
+  if (!response) {
+    return res.status(404).send({ message: 'Fail to delete list', error: 'true' });
+  }
+  return res.send('list deleted');
 };
 
 const getAllListController = async (req, res) => {
@@ -39,4 +49,4 @@ const getAllListController = async (req, res) => {
   res.send(data);
 };
 
-module.exports = { addNewListController, getAllListController };
+module.exports = { addNewListController, getAllListController, deleteListController };

@@ -7,7 +7,7 @@ const addNewListController = async (req, res) => {
 
   const checkList = await checkListExist({ userId, name });
   if (checkList) {
-    return res.status('401').send({
+    return res.status('400').send({
       error: true,
       message: 'name must be unique'
     });
@@ -32,7 +32,11 @@ const getAllListController = async (req, res) => {
       error: true
     });
   }
-  res.send(response);
+  const data = response.map((list) => {
+    list.userId = undefined;
+    return list;
+  });
+  res.send(data);
 };
 
 module.exports = { addNewListController, getAllListController };

@@ -10,16 +10,9 @@ const questions = new mongoose.Schema(
 );
 const QuestionModel = mongoose.model('questions', questions);
 
-const addQuestion = (questionJson) => {
-  const newQuestion = new QuestionModel(questionJson);
-
-  newQuestion.save((error) => {
-    if (error) {
-      console.log('hata');
-    } else {
-      console.log('kaydedildi yupiii');
-    }
-  });
+const addQuestion = async (questionJson) => {
+  const newQuestion = await QuestionModel.create(questionJson.question);
+  return newQuestion || false;
 };
 
 const getQestionWithListId = async (listId) => {

@@ -1,9 +1,12 @@
 const { addQuestion, getQestionWithListId } = require('../models/QuestionModel');
 
-const addQuestionController = (req, res) => {
+const addQuestionController = async (req, res) => {
   const question = req.body;
-  addQuestion(question);
-  res.send('completed add question');
+  const isAdd = await addQuestion(question);
+  if (!isAdd) {
+    return res.status(404).send({ message: 'question not add to database', error: true });
+  }
+  return res.send('add question');
 };
 
 const listBesideQuestion = async (req, res) => {

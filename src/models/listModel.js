@@ -21,7 +21,6 @@ const checkListExist = (userInfo) => {
 const deleteList = async (listId) => {
   const list = listId.split(',');
   const response = await ListModel.deleteMany({ _id: { $in: list } });
-  console.log(response);
   return response;
 };
 

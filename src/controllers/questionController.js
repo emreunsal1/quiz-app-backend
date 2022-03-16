@@ -1,4 +1,4 @@
-const { addQuestion, getQestionWithListId } = require('../models/QuestionModel');
+const { addQuestion, getQestionWithListId, deleteQuestion } = require('../models/QuestionModel');
 
 const addQuestionController = async (req, res) => {
   const question = req.body;
@@ -7,6 +7,12 @@ const addQuestionController = async (req, res) => {
     return res.status(404).send({ message: 'question not add to database', error: true });
   }
   return res.send('add question');
+};
+
+const deleteQuestionController = async (req, res) => {
+  const { questionId } = req.params;
+  const response = await deleteQuestion(questionId);
+  res.send(response);
 };
 
 const listBesideQuestion = async (req, res) => {
@@ -21,4 +27,4 @@ const listBesideQuestion = async (req, res) => {
   res.send(response);
 };
 
-module.exports = { addQuestionController, listBesideQuestion };
+module.exports = { addQuestionController, listBesideQuestion, deleteQuestionController };

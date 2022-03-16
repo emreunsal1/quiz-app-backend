@@ -4,7 +4,8 @@ const questions = new mongoose.Schema(
   {
     listId: String,
     question: String,
-    options: [{ optionsContent: String, correct: Boolean }]
+    options: [{ optionsContent: String, correct: Boolean }],
+    time: Number
   },
   { timestamps: true }
 );
@@ -15,9 +16,15 @@ const addQuestion = async (questionJson) => {
   return newQuestion || false;
 };
 
+const deleteQuestion = async (questionsId) => {
+  const questions = questionsId.split(',');
+  const response = await QuestionModel.deleteMany({ _id: { $in: questions } });
+  return response;
+};
+
 const getQestionWithListId = async (listId) => {
   const questions = await QuestionModel.find(listId);
   return questions || false;
 };
 
-module.exports = { addQuestion, getQestionWithListId };
+module.exports = { addQuestion, getQestionWithListId, deleteQuestion };

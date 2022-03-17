@@ -22,9 +22,14 @@ const deleteQuestion = async (questionsId) => {
   return response;
 };
 
+const deleteListWithQestion = async (listId) => {
+  const response = await QuestionModel.deleteMany({ listId: listId });
+  console.log(response);
+};
+
 const getQestionWithListId = async (listId) => {
   const questions = await QuestionModel.find(listId);
   return questions || false;
 };
 
-module.exports = { addQuestion, getQestionWithListId, deleteQuestion };
+module.exports = { addQuestion, getQestionWithListId, deleteQuestion, deleteListWithQestion };

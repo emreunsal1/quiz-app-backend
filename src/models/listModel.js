@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const { deleteListWithQestion } = require('./QuestionModel');
 const list = new mongoose.Schema(
   {
     userId: String,
@@ -21,6 +22,7 @@ const checkListExist = (userInfo) => {
 const deleteList = async (listId) => {
   const list = listId.split(',');
   const response = await ListModel.deleteMany({ _id: { $in: list } });
+  await deleteListWithQestion(listId);
   return response;
 };
 

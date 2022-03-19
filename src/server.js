@@ -11,24 +11,25 @@ const http = require('http').Server(app);
 app.use(express.json());
 app.use(cors());
 
-// const users = [];
-// const io = socket(http);
-// io.on('connection', (socket) => {
-//   socket.on('joinRoom', (data) => {
-//     socket.join(data.roomKey);
-//     users.push({ name: data.name, id: socket.id, roomKey: data.roomKey });
-//     const filtersUsers = users.filter((user) => user.roomKey === data.roomKey);
-//     io.to(data.roomKey).emit('studentJoined', filtersUsers);
-//     const userId = io.sockets.adapter.rooms.get(data.roomKey);
-//     console.log(userId);
-//   });
+const io = socket(http);
+io.on('connection', (socket) => {
+  socket.on('createRoom', (roomKey) => {
+    socket.join(roomKey);
+    console.log(roomKey);
+  });
 
-//   socket.on('createRoom', (data) => {
-//     const roomKey = data.roomKey;
-//     socket.join(roomKey);
-//     io.emit('roomCreated', { roomKey });
-//   });
-// });
+  socket.on('joinRoom', (roomKey) => {
+    if (!socket.adapter.rooms.has(roomKey)) { return console.log('olmadı'); }
+    socket.join(roomKey);
+    console.log(roomKey);
+  });
+  socket.on('cevap1', (data) => {
+    const room = Array.from(socket.adapter.sids.get(socket.id))[1];
+    console.log(socket.adapter.rooms);
+    // console.log(socket.id);
+    socket.to(room).emit('cevap1', data);
+  });
+});
 
 connectDB();
 app.use('/', indexRouter);

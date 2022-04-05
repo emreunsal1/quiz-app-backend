@@ -1,7 +1,7 @@
 
 const admin = [];
 const users = [];
-let scoreList = [];
+const usersResponses = [];
 
 const isRoomExist = (socket, data) => socket.adapter.rooms.has(data.roomKey);
 const isUserAlreadyInRoom = (socket, roomKey) => socket.adapter.rooms.get(roomKey).has(socket.id);
@@ -27,7 +27,7 @@ const joinRoomHandler = (io, socket, data) => {
   if (isUsernameExist(name)) {
     return emitError(io, socket, 'aynı isimli kullanıcı içeride var');
   }
-  users.push({ id: socket.id, name: name, roomKey: roomKey });
+  users.push({ id: socket.id, name: name, roomKey: roomKey, score: 0 });
 
   socket.join(roomKey);
   socket.to(roomKey).emit('userInfo', users.filter((user) => user.roomKey === roomKey));
@@ -35,25 +35,26 @@ const joinRoomHandler = (io, socket, data) => {
 };
 
 const questionsHandler = (io, socket, data) => {
-  const question = data[0];
+  const question = data;
   const adminRoom = admin.find((admin) => admin.id === socket.id);
   io.to(adminRoom.roomKey).emit('question', question);
 };
 
 const answerHandler = (io, socket, data) => {
-  const isUserExist = scoreList.some((user) => user.id === socket.id);
-  if (!isUserExist) {
-    scoreList.push({ userId: socket.id, score: 0 });
+  const thisUser = users.find((user) => user.id === socket.id);
+
+  if (data) {
+    usersResponses.push({ id: socket.id, correct: data.answer.correct });
+    if (data.answer.correct === true) {
+      thisUser.score = thisUser.score + 1;
+    }
   }
-  if (data.correct === true) {
-    io.to(socket.id).emit('result', 'cevabınız doğru');
-    const list = scoreList.filter((user) => user.userId !== socket.id);
-    const user = scoreList.find((user) => user.userId === socket.id);
-    const newScore = user.score + 1;
-    list.push({ userId: user.userId, score: newScore });
-    scoreList = list;
-  }
-  io.emit('scoreTable', scoreList);
 };
 
-module.exports = { createRoomHandler, joinRoomHandler, questionsHandler, answerHandler };
+const endQuestion = (io, socket, data) => {
+  const thisAdmin = admin.find((admin) => admin.id === socket.id);
+  io.to(thisAdmin.id).emit('scoreTable', users);
+  usersResponses.map((user) => io.to(user.id).emit('result', user.correct));
+};
+
+module.exports = { createRoomHandler, joinRoomHandler, questionsHandler, answerHandler, endQuestion };

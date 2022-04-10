@@ -1,6 +1,6 @@
 
 const admin = [];
-const users = [];
+let users = [];
 const usersResponses = [];
 
 const isRoomExist = (socket, data) => socket.adapter.rooms.has(data.roomKey);
@@ -11,13 +11,15 @@ const emitError = (io, socket, message) => {
   io.to(socket.id).emit('errorMessage', message);
 };
 
-const createRoomHandler = (socket, roomKey) => {
+const createRoomHandler = (io, socket, roomKey) => {
   socket.join(roomKey);
+  io.to(roomKey).emit('userInfo', users.filter((user) => user.roomKey === roomKey));
   admin.push({ roomKey: roomKey, id: socket.id });
 };
 
 const joinRoomHandler = (io, socket, data) => {
   const { roomKey, name } = data;
+
   if (!isRoomExist(socket, data)) {
     return emitError(io, socket, 'böyle bir oda bulunamadı');
   }
@@ -27,10 +29,10 @@ const joinRoomHandler = (io, socket, data) => {
   if (isUsernameExist(name)) {
     return emitError(io, socket, 'aynı isimli kullanıcı içeride var');
   }
-  users.push({ id: socket.id, name: name, roomKey: roomKey, score: 0 });
 
+  users.push({ id: socket.id, name: name, roomKey: roomKey, score: 0 });
   socket.join(roomKey);
-  socket.to(roomKey).emit('userInfo', users.filter((user) => user.roomKey === roomKey));
+  io.to(roomKey).emit('userInfo', users.filter((user) => user.roomKey === roomKey));
   io.to(socket.id).emit('isLogin', true);
 };
 
@@ -46,15 +48,32 @@ const answerHandler = (io, socket, data) => {
   if (data) {
     usersResponses.push({ id: socket.id, correct: data.answer.correct });
     if (data.answer.correct === true) {
-      thisUser.score = thisUser.score + 1;
+      const point = 10 * data.timer;
+      thisUser.score = thisUser.score += point;
     }
   }
 };
 
 const endQuestion = (io, socket, data) => {
   const thisAdmin = admin.find((admin) => admin.id === socket.id);
-  io.to(thisAdmin.id).emit('scoreTable', users);
+  const userScoreList = users.filter((user) => user.roomKey === thisAdmin.roomKey);
+  io.to(thisAdmin.id).emit('scoreTable', userScoreList);
   usersResponses.map((user) => io.to(user.id).emit('result', user.correct));
 };
 
-module.exports = { createRoomHandler, joinRoomHandler, questionsHandler, answerHandler, endQuestion };
+const disconnectedRoom = (io, socket) => {
+  const roomKey = admin.find((_admin) => _admin.id === socket.id).roomKey;
+  io.to(roomKey).emit('gameEnded', users.filter((user) => user.roomKey === roomKey));
+  io.socketsLeave(roomKey);
+  users = users.filter((user) => user.roomKey !== roomKey);
+};
+
+const onUserDisconnect = (io, socket) => {
+  const user = users.find((user) => user.id === socket.id);
+  if (!user) return;
+  console.log('geldi');
+  users = users.filter((user) => user.id !== socket.id);
+  io.to(user.roomKey).emit('userInfo', users.filter((_user) => _user.roomKey === user.roomKey));
+};
+
+module.exports = { createRoomHandler, joinRoomHandler, questionsHandler, answerHandler, endQuestion, disconnectedRoom, onUserDisconnect };

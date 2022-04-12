@@ -44,6 +44,7 @@ const questionsHandler = (io, socket, data) => {
 
 const answerHandler = (io, socket, data) => {
   const thisUser = users.find((user) => user.id === socket.id);
+  io.emit('answerInfo', data.answer);
 
   if (data) {
     usersResponses.push({ id: socket.id, correct: data.answer.correct });
@@ -71,7 +72,6 @@ const disconnectedRoom = (io, socket) => {
 const onUserDisconnect = (io, socket) => {
   const user = users.find((user) => user.id === socket.id);
   if (!user) return;
-  console.log('geldi');
   users = users.filter((user) => user.id !== socket.id);
   io.to(user.roomKey).emit('userInfo', users.filter((_user) => _user.roomKey === user.roomKey));
 };

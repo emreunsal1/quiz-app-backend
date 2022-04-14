@@ -1,7 +1,7 @@
-const { addList, checkListExist, getUserLists, deleteList } = require('../models/ListModel');
+const { addList, checkListExist, getUserLists, deleteList, editList } = require('../models/ListModel');
 
 const addNewListController = async (req, res) => {
-  const { name } = req.body;
+  const { name, description } = req.body;
   const token = req.token;
   const { userId } = token;
 
@@ -13,7 +13,7 @@ const addNewListController = async (req, res) => {
     });
   }
 
-  const response = await addList({ userId, name });
+  const response = await addList({ userId, name, description });
   if (!response) {
     return res.status(404).send({
       message: 'liste eklenemedi',
@@ -49,4 +49,12 @@ const getAllListController = async (req, res) => {
   res.send(data);
 };
 
-module.exports = { addNewListController, getAllListController, deleteListController };
+const editListController = async (req, res) => {
+  const { listId, title, description } = req.body;
+  const response = await editList(listId, title, description);
+  if (response) {
+    res.send(response);
+  }
+};
+
+module.exports = { addNewListController, getAllListController, deleteListController, editListController };

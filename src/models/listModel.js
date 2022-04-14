@@ -3,7 +3,8 @@ const { deleteListWithQestion } = require('./QuestionModel');
 const list = new mongoose.Schema(
   {
     userId: String,
-    name: String
+    name: String,
+    description: String
   },
   { timestamps: true }
 );
@@ -31,4 +32,10 @@ const getUserLists = async (userId) => {
   return data || false;
 };
 
-module.exports = { addList, getUserLists, checkListExist, deleteList };
+const editList = async (listId, title, description) => {
+  const ab = await ListModel.updateOne({ _id: listId }, { name: title, description: description });
+  console.log(ab);
+  return true;
+};
+
+module.exports = { addList, getUserLists, checkListExist, deleteList, editList };

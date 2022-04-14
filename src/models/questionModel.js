@@ -23,8 +23,7 @@ const deleteQuestion = async (questionsId) => {
 };
 
 const deleteListWithQestion = async (listId) => {
-  const response = await QuestionModel.deleteMany({ listId: listId });
-  console.log(response);
+  await QuestionModel.deleteMany({ listId: listId });
 };
 
 const getQestionWithListId = async (listId) => {

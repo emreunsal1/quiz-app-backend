@@ -15,8 +15,8 @@ const addList = async (list) => {
   const newList = await ListModel.create(list);
   return newList || false;
 };
-const checkListExist = (userInfo) => {
-  const list = ListModel.findOne(userInfo).exec();
+const checkListExist = async (userInfo) => {
+  const list = await ListModel.findOne(userInfo).exec();
   return list;
 };
 

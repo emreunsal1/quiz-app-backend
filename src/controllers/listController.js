@@ -20,7 +20,7 @@ const addNewListController = async (req, res) => {
       error: true
     });
   }
-  res.send('added new list');
+  res.send(response);
 };
 
 const deleteListController = async (req, res) => {
@@ -43,15 +43,25 @@ const getAllListController = async (req, res) => {
     });
   }
   const data = response.map((list) => {
-    list.userId = undefined;
     return list;
   });
   res.send(data);
 };
 
 const editListController = async (req, res) => {
-  const { listId, title, description } = req.body;
-  const response = await editList(listId, title, description);
+  const { title, description } = req.body;
+  const { listid } = req.params;
+  const { userId } = req.token;
+  const checkList = await checkListExist({ userId, name: title, description });
+
+  if (checkList) {
+    return res.status(400).send({
+      error: true,
+      message: 'name must be unique'
+    });
+  }
+  const response = await editList(listid, title, description);
+
   if (response) {
     res.send(response);
   }
